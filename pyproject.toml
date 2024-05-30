@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "bwu"
+version = "0.1.0"
+description = "bitwarden utils"
+authors = ["ZackaryW <36378555+ZackaryW@users.noreply.github.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [
+    { include = "bwu", from = "src" }
+]
+scripts = { bwu = "bwu.__main__:main" }
+
+[tool.poetry.dependencies]
+python = "^3.12"
+requests = "^2.32.3"
+click = "^8.1.7"
+python-slugify = "^8.0.4"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.4.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
