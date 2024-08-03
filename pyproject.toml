@@ -16,6 +16,9 @@ dependencies = [
     "keyring>=25.2.1",
 ]
 
+[project.scripts]
+bwu = "bwu_cli.__init__:cli"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
@@ -30,4 +33,4 @@ dev-dependencies = [
 allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/bwu"]
+packages = ["src/bwu", "src/bwu_cli"]
