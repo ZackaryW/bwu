@@ -20,13 +20,17 @@ def cli():
 @click.option("--password", "-p", default=None)
 @click.option("--no-keyring", "-nk", is_flag=True)
 @click.option("--use-environ", "-e", is_flag=True)
-def sess(session, password, no_keyring, use_environ):
+@click.option("--x", "-x", is_flag=True)
+def sess(session, password, no_keyring, use_environ, x):
     global proc
-    set_session(proc, session=session, password=password)
+    proc = set_session(proc, session=session, password=password)
+    if x:
+        print(f"Setting session to {proc.session}")
+
     if not no_keyring:
         from bwu.utils.ext import set_keyring
         set_keyring(proc)
-    
+
     if use_environ:
         set_environ(proc)
 
@@ -38,9 +42,16 @@ def set_path(path= "bw"):
 
 @cli.command("downall", help="Download all entries with attachments")   
 @click.option("--path", "-p")
-def downall(path):
+@click.option("--filter", "-f", multiple=True)
+def downall(path, filter):
     global proc
-    download_all_attachments(proc, path)
+
+    filterdict = {}
+    for f in filter:
+        k, v = f.split("=")
+        filterdict[k] = v
+
+    download_all_attachments(proc, path, filterdict)
 
 @cli.command("cmd", help="console exec")
 @click.argument("cmd", nargs=-1)

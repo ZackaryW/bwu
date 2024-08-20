@@ -1,5 +1,7 @@
 import json
 import typing
+
+import pathvalidate
 from bwu.model import BwEntry
 from bwu.ext import generate_combinations
 from bwu.model import Proc
@@ -68,6 +70,9 @@ def list_items(
             items = items[:limit]
             break
 
+    for item in items:
+        item["sanitized_name"] = pathvalidate.sanitize_filename(item["name"])
+
     return items
 
 
@@ -77,6 +82,7 @@ def dict_items(
     folderid=None,
     collectionid=None,
     organizationid=None,
+    search=None,
     primary_key: str = "id",
     pretty: bool = False,
     limit: int = -1,
@@ -84,20 +90,21 @@ def dict_items(
     items = {}
     params = {
         "url": url,
-        "folderId": folderid,
-        "collectionId": collectionid,
-        "organizationId": organizationid,
+        "folderid": folderid,
+        "collectionid": collectionid,
+        "organizationid": organizationid,
+        "search": search,
     }
     params = {k: v for k, v in params.items() if v is not None}
     for combination in generate_combinations(**params):
-        cmd = []
+        cmd = ["list", "items"]
         for k, v in combination.items():
             cmd.append(f"--{k}")
             cmd.append(str(v))
 
         if pretty:
             cmd.append("--pretty")
-        res = send_proc(proc, cmd)
+        res = send_proc(proc, *cmd)
         data = json.loads(res)
 
         items.update({item[primary_key]: item for item in data})
@@ -106,6 +113,9 @@ def dict_items(
 
             items = {k: v for i, (k, v) in enumerate(items.items()) if i < limit}
             break
+
+    for item in items.values():
+        item["sanitized_name"] = pathvalidate.sanitize_filename(item["name"])
 
     return items
 

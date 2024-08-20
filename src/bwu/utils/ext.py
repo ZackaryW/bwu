@@ -12,14 +12,12 @@ def set_environ(proc: Proc):
 
 
 def fetch_session(proc: Proc):
+    try:
+        ps = os_keyring().get_password("bwu", proc.path)
+        if ps:
+            object.__setattr__(proc, "session", ps)
+    except:  # noqa
+        pass
+
     if not proc.session and "BWU_SESSION" in os.environ:
         object.__setattr__(proc, "session", os.environ["BWU_SESSION"])
-
-    if not proc.session:
-        try:
-            ps = os_keyring().get_password("bwu", proc.path)
-            if ps:
-                object.__setattr__(proc, "session", ps)
-        except:  # noqa
-            pass
-            

@@ -58,11 +58,11 @@ def generate_combinations(**kwargs):
 #
 
 # name dict
-def _format_via_id_name_method(new_dict: dict, santize_key: str, entry: dict, key: str):
+def _format_via_id_name_method(new_dict: dict, sanitize_key: str, entry: dict, key: str):
     if key in new_dict:
         raise ValueError(f"Duplicate key: {key}")
 
-    sanitized = pathvalidate.sanitize_filename(entry[santize_key])
+    sanitized = pathvalidate.sanitize_filename(entry[sanitize_key])
 
     if sanitized in new_dict.values():
         sanitized = f"{sanitized} [{key[-6:]}]"
@@ -72,7 +72,7 @@ def _format_via_id_name_method(new_dict: dict, santize_key: str, entry: dict, ke
 
 def generate_namedict(
     entries: typing.Dict[str, dict],
-    santize_key: str,
+    sanitize_key: str = "sanitized_name",
     filters: typing.List[typing.Callable] = [],
     format_method: typing.Callable = _format_via_id_name_method,
 ):
@@ -83,7 +83,7 @@ def generate_namedict(
             if not filter_func(entry):
                 continue
 
-        format_method(name_dict, santize_key, entry, key)
+        format_method(name_dict, sanitize_key, entry, key)
 
     return name_dict
 
