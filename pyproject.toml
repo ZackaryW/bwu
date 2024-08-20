@@ -1,6 +1,6 @@
 [project]
 name = "bwu"
-version = "0.2.0"
+version = "0.2.1"
 description = "bitwarden utils"
 authors = [
     { name = "ZackaryW", email = "36378555+ZackaryW@users.noreply.github.com" }
