@@ -52,5 +52,13 @@ def download_all_attachments(
         am = create_attachments_meta(entry)
         create_file_meta(entrypath, am, entryid)
 
-
-        
+def remove_attachment(proc: Proc, attachment_id: str, item_id: str):
+    """Remove an attachment from a process."""
+    send_proc(
+        proc,
+        "delete",
+        "attachment",
+        attachment_id,
+        "--itemid",
+        item_id,
+    )
