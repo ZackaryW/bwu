@@ -63,3 +63,10 @@ def remove_attachment(proc: Proc, attachment_id: str, item_id: str):
         "--itemid",
         item_id,
     )
+
+def clear_attachments(proc : Proc, bwentry : BwEntry):
+    if "attachments" not in bwentry:
+        return
+    
+    for attachment in bwentry["attachments"]:
+        remove_attachment(proc, attachment["id"], bwentry["id"])
