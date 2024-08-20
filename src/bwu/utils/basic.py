@@ -29,15 +29,17 @@ def list_items(
     folderid=None,
     collectionid=None,
     organizationid=None,
+    search= None,
     pretty: bool = False,
     limit: int = -1,
 ) -> typing.List[BwEntry]:
-    items = []
+    items : typing.List[BwEntry] = []
     params = {
         "url": url,
-        "folderId": folderid,
-        "collectionId": collectionid,
-        "organizationId": organizationid,
+        "folderid": folderid,
+        "collectionid": collectionid,
+        "organizationid": organizationid,
+        "search": search,
     }
     params = {k: v for k, v in params.items() if v is not None}
     for combination in generate_combinations(**params):
@@ -49,9 +51,18 @@ def list_items(
         if pretty:
             cmd.append("--pretty")
         res = send_proc(proc, *cmd)
-        data = json.loads(res)
+        data : typing.List[BwEntry] = json.loads(res)
 
         items.extend(data)
+
+        # clear duplicates
+        items_id = []
+        for i in range(len(items) - 1, -1, -1):
+            if items[i]["id"] in items_id:
+                del items[i]
+            else:
+                items_id.append(items[i]["id"]) 
+
 
         if limit > 0 and len(items) >= limit:
             items = items[:limit]
