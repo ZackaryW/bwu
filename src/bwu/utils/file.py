@@ -1,6 +1,6 @@
 import os
 from bwu.ext import generate_namedict
-from bwu.model import Proc
+from bwu.model import BwEntry, Proc
 from bwu.utils import send_proc
 from bwu.utils.basic import dict_items
 
@@ -28,13 +28,14 @@ def upload_attachment(proc: Proc, item_id: str, file_path: str):
 
 def download_all_attachments(
     proc : Proc,
-    path : str
+    path : str,
+    filters : dict = {}
 ):
 
     if os.path.exists(path):
         raise ValueError("Path already exists")
 
-    entries = dict_items(proc)
+    entries = dict_items(proc, **filters)
     entries = {k : v for k, v in entries.items() if "attachments"in v}
 
     name_dict = generate_namedict(entries)
